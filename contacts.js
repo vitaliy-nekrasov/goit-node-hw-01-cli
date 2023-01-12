@@ -6,7 +6,7 @@ const contactsPath = path.resolve("./db/contacts.json");
 async function listContacts() {
   try {
     const data = await fs.readFile(contactsPath, "utf-8");
-    // console.log(data);
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -19,6 +19,7 @@ async function getContactById(contactId) {
   const getContact = await contactsParsed.find(
     (contact) => contact.id === contactId.toString()
   );
+  // console.log(getContact);
   return getContact;
 }
 
@@ -28,20 +29,38 @@ async function removeContact(contactId) {
   const getContacts = await contactsParsed.filter(
     (contact) => contact.id !== contactId.toString()
   );
-  console.log(getContacts);
+  const result = await fs.writeFile(
+    contactsPath,
+    JSON.stringify(getContacts),
+    "utf-8"
+  );
+  console.log(result);
 }
 
 async function addContact(name, email, phone) {
+  const contacts = await listContacts();
+  const contactsParsed = await JSON.parse(contacts);
+  // console.log(Number(contactsParsed[contactsParsed.length - 1].id));
   const contact = {
-    id: "12",
+    id: (Number(contactsParsed[contactsParsed.length - 1].id) + 1).toString(),
     name,
     email,
     phone: phone.toString(),
   };
-  const contacts = await listContacts();
-  const contactsParsed = await JSON.parse(contacts);
+
   contactsParsed.push(contact);
-  return contactsParsed;
+  const result = await fs.writeFile(
+    contactsPath,
+    JSON.stringify(contactsParsed),
+    "utf-8"
+  );
+  console.log(result);
+  // return contactsParsed;
 }
 
-console.log(addContact("vlad", "vlad@mainModule.com", 09833322));
+module.exports = {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+};
