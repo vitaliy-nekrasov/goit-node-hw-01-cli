@@ -7,7 +7,7 @@ const contactsPath = path.resolve("./db/contacts.json");
 async function listContacts() {
   try {
     const data = await fs.readFile(contactsPath, "utf-8");
-    console.log(data);
+    console.table(JSON.parse(data));
     console.log("You have successfully uploaded your contact list".green);
   } catch (error) {
     console.log(error);
@@ -38,7 +38,7 @@ async function removeContact(contactId) {
       (contact) => contact.id !== contactId.toString()
     );
     fs.writeFile(contactsPath, JSON.stringify(getContacts), "utf-8");
-    console.log(getContacts);
+    console.table(getContacts);
     console.log(
       `You have successfully remove contact with id = ${contactId}`.green
     );
@@ -66,7 +66,7 @@ async function addContact(name, email, phone) {
 
     contacts.push(newContact);
     fs.writeFile(contactsPath, JSON.stringify(contacts), "utf-8");
-    console.log(contacts);
+    console.table(contacts);
     console.log(
       `You have successfully add contact ${name} with id = ${newContact.id}`
         .green
